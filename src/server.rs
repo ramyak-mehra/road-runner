@@ -1,0 +1,36 @@
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use neon::prelude::*;
+
+#[get("/")]
+async fn hello() -> impl Responder {
+    HttpResponse::Ok().body("Hello world!")
+}
+
+#[post("/echo")]
+async fn echo(req_body: String) -> impl Responder {
+    HttpResponse::Ok().body(req_body)
+}
+
+async fn manual_hello() -> impl Responder {
+    HttpResponse::Ok().body("Hey there!")
+}
+
+async fn run_server() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .service(hello)
+            .service(echo)
+            .route("/hey", web::get().to(manual_hello))
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
+}
+
+pub fn start_server(mut cx: FunctionContext) -> JsResult<JsNull> {
+    actix_web::rt::System::new("server1".to_string())
+        .block_on(run_server())
+        .unwrap();
+
+    Ok(cx.null())
+}
