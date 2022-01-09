@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const server = require(".");
 
-server.startServer();
+server.startServer(8000);
 
 // server.parse_async("filename", (psd) => {
 //   console.log(psd);

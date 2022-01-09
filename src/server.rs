@@ -15,21 +15,23 @@ async fn manual_hello() -> impl Responder {
     HttpResponse::Ok().body("Hey there!")
 }
 
-async fn run_server() -> std::io::Result<()> {
+async fn run_server(port:  usize) -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-    .bind("127.0.0.1:8080")?
+    .bind(format!("127.0.0.1:{}", port))?
     .run()
     .await
 }
 
 pub fn start_server(mut cx: FunctionContext) -> JsResult<JsNull> {
+    let port = cx.argument::<JsNumber>(0)?.value(&mut cx) as usize;
+
     actix_web::rt::System::new("server1".to_string())
-        .block_on(run_server())
+        .block_on(run_server(port))
         .unwrap();
 
     Ok(cx.null())

@@ -447,15 +447,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2df960f5d869b2dd8532793fde43eb5427cceb126c929747a26823ab0eeb536"
 
 [[package]]
-name = "cpu-count"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "neon",
- "num_cpus",
-]
-
-[[package]]
 name = "cpufeatures"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1235,6 +1226,15 @@ checksum = "52e44394d2086d010551b14b53b1f24e31647570cd1deb0379e2c21b329aba00"
 dependencies = [
  "hostname",
  "quick-error",
+]
+
+[[package]]
+name = "road-runner"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "neon",
+ "num_cpus",
 ]
 
 [[package]]
