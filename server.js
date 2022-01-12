@@ -1,35 +1,24 @@
-const { Router } = require("express");
-const server = require(".");
+const { startServer, functionsHandlerNew, get } = require("./index.node");
 
-server.startServer(8000);
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
-// server.parse_async("filename", (psd) => {
-//   console.log(psd);
-// });
+class functionsHandler {
+  constructor() {
+    return functionsHandlerNew("GET", "/users",  (success, req) => {
+      let name = req.params.params;
+      if (name == "ramyak") {
 
-
-// Router.get("/",  helloword);
-
-
-
-// async function helloword(req, res) {
-//   req.user = user;
-//  return "Hello World! " + req.user.name;
-// }
-
-// let obj = {
-//   type: "get",
-//   url: "/",
-//   callback: helloword,
-// };
-
-
-// [
-
-
-// ];
-
-// //rust function
-// let pb = {
-//   hei: "wod",
-// };
+        return `hello ${name}`;
+      }
+    });
+  }
+}
+const functions = new functionsHandler();
+// console.log(functions);
+// var keys = Object.keys(functions);
+// console.log(keys);
+startServer(functions);

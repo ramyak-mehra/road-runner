@@ -12,10 +12,13 @@ crate-type = ["cdylib"]
 
 [dependencies]
 num_cpus = "1"
-actix-web = "3"
+actix-web = "4.0.0-beta.19"
+matchit = "0.4.3"
+anyhow = "1.0.38"
+futures = "0.3.19"
 
 [dependencies.neon]
 version = "0.9"
 default-features = false
-features = ["napi-6"]
+features = ["napi-6" , "channel-api"]
 
