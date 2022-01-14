@@ -8,6 +8,8 @@ use matchit::Node;
 use neon::prelude::*;
 
 type RouteType = Arc<RwLock<Node<Arc<Root<JsFunction>>>>>;
+impl Finalize for Router {}
+pub type JsRouter = JsBox<Router>;
 
 #[derive(Default)]
 pub struct Router {
@@ -38,13 +40,12 @@ impl Router {
             .unwrap()
             .insert(route_path, Arc::new(call_back))
             .expect("failed to insert route");
-            println!("Route added for {} {} ", route_type, route_path);
-
+        println!("Route added for {} {} ", route_type, route_path);
     }
-   pub fn get_route(
+    pub fn get_route(
         &self,
         method: Method,
-        route: &'static str,
+        route: &str,
     ) -> Option<(Arc<Root<JsFunction>>, HashMap<String, String>)> {
         let table = &mut self.get_map(method)?;
         match table.read().unwrap().at(route) {
@@ -60,26 +61,17 @@ impl Router {
     }
 }
 
-impl Finalize for Router {}
-
-pub type JsRouter = JsBox<Router>;
-
-pub fn create_router(mut cx: FunctionContext) -> JsResult<JsRouter> {
-    let router = Router::default();
-    Ok(cx.boxed(router))
-}
-
-pub fn add_get_route(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let js_router = cx.this().downcast_or_throw::<JsRouter, _>(&mut cx)?;
-    let route_path = cx.argument::<JsString>(0)?.value(&mut cx);
-    let call_back = cx.argument::<JsFunction>(1)?.root(&mut cx);
-    js_router.add_route(Method::GET.as_str(), &route_path, call_back);
-    Ok(cx.undefined())
-}
-pub fn add_post_route(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let js_router = cx.this().downcast_or_throw::<JsRouter, _>(&mut cx)?;
-    let route_path = cx.argument::<JsString>(0)?.value(&mut cx);
-    let call_back = cx.argument::<JsFunction>(1)?.root(&mut cx);
-    js_router.add_route(Method::POST.as_str(), &route_path, call_back);
-    Ok(cx.undefined())
+impl Router {
+    pub fn js_add_route(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+        let js_router = cx.this().downcast_or_throw::<JsRouter, _>(&mut cx)?;
+        let route_type = cx.argument::<JsString>(0)?.value(&mut cx);
+        let route_path = cx.argument::<JsString>(1)?.value(&mut cx);
+        let call_back = cx.argument::<JsFunction>(2)?.root(&mut cx);
+        js_router.add_route(&route_type, &route_path, call_back);
+        Ok(cx.undefined())
+    }
+    pub fn create_router(mut cx: FunctionContext) -> JsResult<JsRouter> {
+        let router = Router::default();
+        Ok(cx.boxed(router))
+    }
 }
