@@ -17,6 +17,7 @@
     "cargo-cp-artifact": "^0.1"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "express": "^4.17.2"
   }
 }
