@@ -18,7 +18,7 @@ anyhow = "1.0.38"
 futures = "0.3.19"
 
 [dependencies.neon]
-version = "0.9"
+version = "0.10"
 default-features = false
 features = ["napi-6" , "channel-api"]
 
